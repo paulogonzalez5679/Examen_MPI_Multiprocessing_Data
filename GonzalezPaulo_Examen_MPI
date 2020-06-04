@@ -1,0 +1,193 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun  4 11:12:39 2020
+
+@author: usuario
+"""
+
+
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Thu Jun  4 09:41:12 2020
+
+@author: usuario
+"""
+import numpy as np
+from mpi4py import MPI
+
+import random
+
+import time
+
+from multiprocessing import pool
+
+import multiprocessing
+
+NRA=tam
+NCA=tam
+NCB=tam
+MASTER=0
+FROM_MASTER=1
+FROM_WORKER=2
+global num_threads
+num_threads = 30
+
+a = []
+b = []
+c = []
+
+for i in range(NRA):
+    c.append([])
+    for j in range(NCB):
+        c[i].append(0)
+
+MPI.Init
+
+comm = MPI.COMM_WORLD
+numtasks = comm.size
+taskid = comm.Get_rank()
+
+numworkers = numtasks-1
+
+if (taskid == MASTER):
+   
+    for i in range(NRA):
+        a.append([])
+        for j in range (NCA):
+            a[i].append(i+j)
+    for i in range(NCA):
+        b.append([])
+        for j in range (NCB):
+            b[i].append(i*j)
+
+    #print("Number of worker tasks = %d\n",numworkers);
+   
+    averow = NRA//numworkers
+    extra = NRA%numworkers
+    offset = 0
+    mtype = FROM_MASTER;
+   
+    for destino in range(numworkers):
+       
+        if(destino+1<=extra):
+            rows=averow+1
+        else:
+            rows=averow
+       
+        #print("   sending %d rows to task %d\n",rows,destino+1)
+        comm.send(offset,dest=destino+1,tag=mtype)
+        comm.send(rows,dest=destino+1,tag=mtype)
+        comm.send(a[offset:rows+offset],dest=destino+1,tag=mtype)
+        comm.send(b,dest=destino+1,tag=mtype)
+        offset = offset + rows
+       
+    mtype = FROM_WORKER
+   
+    for i in range(numworkers):
+       
+        fuente = i
+        offset=comm.recv(source=fuente+1,tag=mtype)
+        rows=comm.recv(source=fuente+1,tag=mtype)
+        c=comm.recv(source=fuente+1,tag=mtype)
+        #b=comm.recv(source=fuente+1,tag=mtype)
+
+
+    for i in range(30):
+        #print("");
+        for j in range(NCB):
+            print (c[i][j])
+     
+    #print ("")"""
+       
+   
+     
+ 
+
+def how_many_max_values_sequential(ar):
+
+    #find max value of the list
+
+    maxValue = 0
+
+    for i in range(len(ar)):
+
+        if i == 0:
+
+            maxValue = ar[i]
+
+        else:
+
+            if ar[i] > maxValue:
+
+                maxValue = ar[i]
+
+    #find how many max values are in the list
+
+    contValue = 0
+
+    for i in range(len(ar)):
+
+        if ar[i] == maxValue:
+
+            contValue += 1
+
+ 
+
+    return contValue
+
+ 
+
+     
+# Complete the how_many_max_values_parallel function below.
+
+def how_many_max_values_parallel(ar):
+
+   
+ 
+
+    return 0
+
+
+if __name__ == '__main__':
+
+   
+
+   
+    
+    ar_count = 1000
+    procs = 2 
+    sizeSegment = ar_count/procs
+
+    jobs=[]
+    for i in range(ar_count):
+        process = multiprocessing.Process(target=how_many_max_values_parallel, args=(i,))
+        process.start()
+        process.join()
+    #Generate ar_count random numbers between 1 and 30
+
+    ar = [random.randrange(1,30) for i in range(ar_count)]
+
+    inicioSec = time.time()
+
+    resultSec = how_many_max_values_sequential(ar)
+
+    finSec =  time.time()
+
+   
+
+    inicioPar = time.time()   
+
+    resultPar = how_many_max_values_parallel(ar)
+
+    finPar = time.time()   
+    
+
+
+    print('Results are correct!\n' if resultSec == resultPar else 'Results are incorrect!\n')
+
+    print('Sequential Process took %.3f ms with %d items\n' % ((finSec - inicioSec)*1000, ar_count))
+  
+
+    print('Parallel Process took %.3f ms with %d items\n' % ((finPar - inicioPar)*1000, ar_count))

@@ -1,8 +1,10 @@
 # GonzalezPaulo_Examen_MPI_Multiprocessing
 
-# Para la ejecucion del Multiprocessing
+# Multiprocessing
 
-python  GonzalezPaulo_Examen_Multiprocessing,py
+Se toma en cuenta el numero de procesadores que existen dentro del servidor y se ejecuta, en mi caso seleccione solo 2 a pesar de que tiene 4 por ello el cambio no es muy notorio, en el proces se reutiliza lo que es el secuencial con el fin de obtener el array de los numero y dividir para la cantidad de procesadores.
+
+python  GonzalezPaulo_Examen_Multiprocessing.py
 
 Resultados:
 
